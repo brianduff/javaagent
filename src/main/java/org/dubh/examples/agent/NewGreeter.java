@@ -1,7 +1,7 @@
 package org.dubh.examples.agent;
 
 public class NewGreeter {
-  public static String getName() {
+  public static String getNewName() {
     return "Brian";
   }
 }

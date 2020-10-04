@@ -56,7 +56,7 @@ public class ExampleAgent {
         // method, and another to return whatever that static method returned.
         InsnList instructions = new InsnList();
         instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 
-            "org/dubh/examples/agent/NewGreeter", "getName",
+            "org/dubh/examples/agent/NewGreeter", "getNewName",
             "()Ljava/lang/String;"));
         instructions.add(new InsnNode(Opcodes.ARETURN));
 
