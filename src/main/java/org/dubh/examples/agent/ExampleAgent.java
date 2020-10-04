@@ -27,28 +27,32 @@ public class ExampleAgent {
           byte[] classfileBuffer) {
 
         if ("org/dubh/examples/agent/target/Greeter".equals(className)) {
-          ClassReader reader = new ClassReader(classfileBuffer);
-          ClassNode classNode = new ClassNode();
-          reader.accept(classNode, Opcodes.ASM8);
-          for (MethodNode method : classNode.methods) {
-            if ("getName".equals(method.name)) {
-              InsnList instructions = new InsnList();
-              instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/dubh/examples/agent/NewGreeter", "getName",
-                  "()Ljava/lang/String;"));
-              instructions.add(new InsnNode(Opcodes.ARETURN));
-              method.instructions = instructions;
-            }
-          }
-
-          ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-          classNode.accept(writer);
-
-          return writer.toByteArray();
+          return transformClass(classfileBuffer);
         }
 
         return null;
       }
     });
+  }
+
+  private static byte[] transformClass(byte[] classfileBuffer) {
+    ClassReader reader = new ClassReader(classfileBuffer);
+    ClassNode classNode = new ClassNode();
+    reader.accept(classNode, Opcodes.ASM8);
+    for (MethodNode method : classNode.methods) {
+      if ("getName".equals(method.name)) {
+        InsnList instructions = new InsnList();
+        instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/dubh/examples/agent/NewGreeter", "getName",
+            "()Ljava/lang/String;"));
+        instructions.add(new InsnNode(Opcodes.ARETURN));
+        method.instructions = instructions;
+      }
+    }
+
+    ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+    classNode.accept(writer);
+
+    return writer.toByteArray();
   }
 
 }
